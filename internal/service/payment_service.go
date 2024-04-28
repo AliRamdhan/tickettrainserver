@@ -15,6 +15,14 @@ func NewPaymentService() *PaymentService {
 	return &PaymentService{}
 }
 
+func (ps *PaymentService) GetAllPayments() ([]model.Payment, error) {
+	var payments []model.Payment
+	if err := config.DB.Find(&payments).Error; err != nil {
+		return nil, err
+	}
+	return payments, nil
+}
+
 func (ps *PaymentService) CreatePayment(payment *model.Payment, orderId uint) error {
 	order := &model.Order{}
 	if err := config.DB.Preload("Ticket").First(order, orderId).Error; err != nil {

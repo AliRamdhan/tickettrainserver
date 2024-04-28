@@ -17,6 +17,16 @@ func NewSeatTrainHandler(cs *service.SeatService) *SeatTrainHandler {
 	return &SeatTrainHandler{seatTrain: cs}
 }
 
+func (sh *SeatTrainHandler) GetAllSeats(c *gin.Context) {
+	seats, err := sh.seatTrain.GetAllSeats()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "All Seats", "Seats": seats})
+}
+
 func (sh *SeatTrainHandler) CreateSeat(c *gin.Context) {
 	var seat model.Seat
 	if err := c.ShouldBindJSON(&seat); err != nil {

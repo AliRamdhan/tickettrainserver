@@ -13,7 +13,6 @@ func ServiceAuth(r *gin.Engine, authUser *auth_service.AuthService) {
 	authHandler := auth_handler.NewAuthHandler(authUser)
 	authRoutes := r.Group("/auth")
 	{
-		authRoutes.GET("/user/all", authHandler.GetAllUser)
 		authRoutes.POST("/register", authHandler.RegisterAuth)
 		authRoutes.POST("/login", authHandler.Login)
 		//authRoutes.POST("/home", authHandler.Home).Use(middlewares.Auth())
@@ -25,6 +24,17 @@ func ServiceAuth(r *gin.Engine, authUser *auth_service.AuthService) {
 		{
 			securedAdminRoutes.GET("/admin", authHandler.Home)
 		}
+	}
+}
+
+func UserService(r *gin.Engine, userService *service.UserService) {
+	handler := handler.NewUserHandler(userService)
+	routes := r.Group("/user")
+	{
+		routes.GET("/all", handler.GetAllUser)
+		routes.GET("/:userId", handler.GetUserById)
+		routes.PUT("/update/:userId", handler.UpdateUser)
+		routes.DELETE("delete/:userId", handler.DeleteUser)
 	}
 }
 
@@ -44,6 +54,7 @@ func ServiceTicket(r *gin.Engine, ticketService *service.TicketService) {
 	ticketRoutes := r.Group("/tickets")
 	{
 		ticketRoutes.POST("/create", ticketHandler.CreateTicket)
+		ticketRoutes.GET("/:ticketId", ticketHandler.GetTicketById)
 		ticketRoutes.GET("/all", ticketHandler.GetAllTicket)
 		ticketRoutes.PUT("/update/:ticketId", ticketHandler.UpdateTicket)
 		ticketRoutes.DELETE("delete/:ticketId", ticketHandler.DeleteTicket)
@@ -54,6 +65,7 @@ func ServiceSeat(r *gin.Engine, seatService *service.SeatService) {
 	seatHandler := handler.NewSeatTrainHandler(seatService)
 	seatRoutes := r.Group("/seats")
 	{
+		seatRoutes.GET("/all", seatHandler.GetAllSeats)
 		seatRoutes.POST("/create", seatHandler.CreateSeat)
 		seatRoutes.GET("/all/:ticketId", seatHandler.GetAllSeatsFromTicketId)
 		//GetAllSeats for admin
@@ -76,7 +88,7 @@ func ServicePayment(r *gin.Engine, paymentService *service.PaymentService) {
 	paymentRoutes := r.Group("/payment")
 	{
 		paymentRoutes.POST("/create", paymentHandler.CreatePayment)
-		// paymentRoutes.GET("/all", paymentHandler.GetAllOrder)
+		paymentRoutes.GET("/all", paymentHandler.GetAllPayments)
 		// paymentRoutes.GET("/user/:userId", paymentHandler.GetAllOrderByUser)
 	}
 }

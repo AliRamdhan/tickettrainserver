@@ -42,6 +42,25 @@ func (th *TicketHandler) GetAllTicket(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "All tickets", "Tickets": tickets})
 }
 
+func (th *TicketHandler) GetTicketById(c *gin.Context) {
+	ticketIdStr := c.Param("ticketId")
+
+	var ticketId uint
+	_, err := fmt.Sscanf(ticketIdStr, "%d", &ticketId)
+	// trackID, err := uuid.Parse(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ticket id format"})
+		return
+	}
+	tickets, err := th.ticketService.GetTicketById(ticketId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Details tickets", "Tickets": tickets})
+}
+
 func (th *TicketHandler) UpdateTicket(c *gin.Context) {
 	var ticket model.Ticket
 	if err := c.ShouldBindJSON(&ticket); err != nil {
@@ -63,7 +82,7 @@ func (th *TicketHandler) UpdateTicket(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "ticket updated successfully", "product": ticket})
+	c.JSON(http.StatusOK, gin.H{"message": "ticket updated successfully", "ticket": ticket})
 }
 
 func (th *TicketHandler) DeleteTicket(c *gin.Context) {

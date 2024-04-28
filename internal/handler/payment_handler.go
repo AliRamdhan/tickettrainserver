@@ -16,6 +16,16 @@ func NewPaymentHandler(ps *service.PaymentService) *PaymentHandler {
 	return &PaymentHandler{paymentService: ps}
 }
 
+func (ph *PaymentHandler) GetAllPayments(c *gin.Context) {
+	payments, err := ph.paymentService.GetAllPayments()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "All payments", "Payments": payments})
+}
+
 func (ph *PaymentHandler) CreatePayment(c *gin.Context) {
 	var payment model.Payment
 	if err := c.ShouldBindJSON(&payment); err != nil {

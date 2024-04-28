@@ -13,10 +13,11 @@ func NewSeatService() *SeatService {
 	return &SeatService{}
 }
 
-func (ps *SeatService) CreateSeat(ticket *model.Seat, trainTicketId uint) error {
-	ticket.SeatTicket = trainTicketId
-	ticket.CreatedAt = time.Now().Format("2006-01-02 15:04:05")
-	return config.DB.Create(ticket).Error
+func (ps *SeatService) CreateSeat(seat *model.Seat, trainTicketId uint) error {
+	seat.SeatAvailable = true
+	seat.SeatTicket = trainTicketId
+	seat.CreatedAt = time.Now().Format("2006-01-02 15:04:05")
+	return config.DB.Create(seat).Error
 }
 
 //	func (ps *SeatService) GetAllSeatsFromTicketId(ticketId uint) (*model.Seat, error) {
@@ -26,9 +27,16 @@ func (ps *SeatService) CreateSeat(ticket *model.Seat, trainTicketId uint) error 
 //		}
 //		return &trainSeat, nil
 //	}
+func (ps *SeatService) GetAllSeats() ([]model.Seat, error) {
+	var seats []model.Seat
+	if err := config.DB.Preload("Ticket").Find(&seats).Error; err != nil {
+		return nil, err
+	}
+	return seats, nil
+}
 func (ps *SeatService) GetAllSeatsFromTicketId(ticketID uint) ([]model.Seat, error) {
 	var trainSeats []model.Seat
-	if err := config.DB.Where("seat_ticket = ?", ticketID).Find(&trainSeats).Error; err != nil {
+	if err := config.DB.Preload("Ticket").Where("seat_ticket = ?", ticketID).Find(&trainSeats).Error; err != nil {
 		return nil, err
 	}
 	return trainSeats, nil
