@@ -7,6 +7,7 @@
 
 # Env and config files
 .env
+.env.development
 config.yaml
 
 # Test binary, built with `go test -c`
