@@ -67,9 +67,11 @@ func main() {
 func enableCORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Set CORS headers
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
+		origin := c.Request.Header.Get("Origin")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", origin) // Allow specific origin
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization") // Allow Content-Type and Authorization headers
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		// Check if the request is for CORS preflight
 		if c.Request.Method == "OPTIONS" {

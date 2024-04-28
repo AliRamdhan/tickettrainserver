@@ -62,7 +62,7 @@ func (au *AuthHandler) Login(c *gin.Context) {
 	}
 
 	// Generate token
-	tokenString, err := au.authService.GenerateToken(user.Email, user.Username, int(user.RoleUser))
+	tokenString, err := au.authService.GenerateToken(user.Email, user.Username, int(user.RoleUser), int(user.UserID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -85,12 +85,12 @@ func (au *AuthHandler) Home(context *gin.Context) {
 	}
 
 	// Call the Home function in the auth service to retrieve user information
-	username, err := au.authService.Home(tokenString)
+	user, err := au.authService.Home(tokenString)
 	if err != nil {
 		context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Return the username in the response
-	context.JSON(http.StatusOK, gin.H{"message": "Welcome, " + username + "!"})
+	// Return the user in the response
+	context.JSON(http.StatusOK, gin.H{"message": "Data of user", "User": user})
 }

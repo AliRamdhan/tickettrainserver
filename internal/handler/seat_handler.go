@@ -27,6 +27,17 @@ func (sh *SeatTrainHandler) GetAllSeats(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "All Seats", "Seats": seats})
 }
 
+func (sh *SeatTrainHandler) GetSeatBySeatName(c *gin.Context) {
+	seatName := c.Param("seatName")
+	seats, err := sh.seatTrain.GetSeatBySeatName(seatName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Details Seats", "Seats": seats})
+}
+
 func (sh *SeatTrainHandler) CreateSeat(c *gin.Context) {
 	var seat model.Seat
 	if err := c.ShouldBindJSON(&seat); err != nil {

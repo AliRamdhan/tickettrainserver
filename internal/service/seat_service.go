@@ -34,6 +34,14 @@ func (ps *SeatService) GetAllSeats() ([]model.Seat, error) {
 	}
 	return seats, nil
 }
+func (ps *SeatService) GetSeatBySeatName(seatName string) (*model.Seat, error) {
+	var seats model.Seat
+	if err := config.DB.First(&seats, "seat_number = ?", seatName).Error; err != nil {
+		return nil, err // Ticket not found
+	}
+	return &seats, nil
+}
+
 func (ps *SeatService) GetAllSeatsFromTicketId(ticketID uint) ([]model.Seat, error) {
 	var trainSeats []model.Seat
 	if err := config.DB.Preload("Ticket").Where("seat_ticket = ?", ticketID).Find(&trainSeats).Error; err != nil {

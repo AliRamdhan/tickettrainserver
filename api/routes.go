@@ -55,6 +55,7 @@ func ServiceTicket(r *gin.Engine, ticketService *service.TicketService) {
 	{
 		ticketRoutes.POST("/create", ticketHandler.CreateTicket)
 		ticketRoutes.GET("/:ticketId", ticketHandler.GetTicketById)
+		ticketRoutes.GET("/details/:ticketName", ticketHandler.GetTicketByName)
 		ticketRoutes.GET("/all", ticketHandler.GetAllTicket)
 		ticketRoutes.PUT("/update/:ticketId", ticketHandler.UpdateTicket)
 		ticketRoutes.DELETE("delete/:ticketId", ticketHandler.DeleteTicket)
@@ -66,6 +67,7 @@ func ServiceSeat(r *gin.Engine, seatService *service.SeatService) {
 	seatRoutes := r.Group("/seats")
 	{
 		seatRoutes.GET("/all", seatHandler.GetAllSeats)
+		seatRoutes.GET("/:seatName", seatHandler.GetSeatBySeatName)
 		seatRoutes.POST("/create", seatHandler.CreateSeat)
 		seatRoutes.GET("/all/:ticketId", seatHandler.GetAllSeatsFromTicketId)
 		//GetAllSeats for admin
@@ -80,6 +82,7 @@ func ServiceOrder(r *gin.Engine, orderService *service.OrderTicketService) {
 	{
 		orderRoutes.POST("/create", orderHandler.CreateOrder)
 		orderRoutes.GET("/all", orderHandler.GetAllOrder)
+		orderRoutes.GET("/:orderNumb", orderHandler.GetOrderByOrderNumber)
 		orderRoutes.GET("/user/:userId", orderHandler.GetAllOrderByUser)
 	}
 }

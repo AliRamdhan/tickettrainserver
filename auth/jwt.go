@@ -13,15 +13,17 @@ type JWTClaim struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	RoleID   int    `json:"role_id"`
+	UserId   int    `json:"user_id"`
 	jwt.StandardClaims
 }
 
-func GenerateJWT(email string, username string, roleID int) (tokenString string, err error) {
+func GenerateJWT(email string, username string, roleID int, userId int) (tokenString string, err error) {
 	expirationTime := time.Now().Add(1 * time.Hour)
 	claims := &JWTClaim{
 		Email:    email,
 		Username: username,
 		RoleID:   roleID,
+		UserId:   userId,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},

@@ -32,6 +32,7 @@ func (os *OrderTicketService) CreateOrder(order *model.Order, orderSeatId uint, 
 	}
 	order.OrderNumber = uuid.New()
 	order.OrderTicketStatus = "Pending"
+	order.OrderPassengerAmount = "1"
 	order.OrderSeatId = orderSeatId
 	order.OrderUserId = orderUserId
 	order.OrderTicketId = ticketId
@@ -62,4 +63,12 @@ func (os *OrderTicketService) GetAllOrder() ([]model.Order, error) {
 		return nil, err
 	}
 	return tickets, nil
+}
+
+func (Os *OrderTicketService) GetOrderByOrderNumber(ordernumber string) (*model.Order, error) {
+	var orders model.Order
+	if err := config.DB.First(&orders, "order_number = ?", ordernumber).Error; err != nil {
+		return nil, err // Ticket not found
+	}
+	return &orders, nil
 }

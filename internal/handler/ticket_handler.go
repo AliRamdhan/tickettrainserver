@@ -61,6 +61,17 @@ func (th *TicketHandler) GetTicketById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Details tickets", "Tickets": tickets})
 }
 
+func (th *TicketHandler) GetTicketByName(c *gin.Context) {
+	ticketName := c.Param("ticketName")
+	tickets, err := th.ticketService.GetTicketByName(ticketName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Details tickets", "Tickets": tickets})
+}
+
 func (th *TicketHandler) UpdateTicket(c *gin.Context) {
 	var ticket model.Ticket
 	if err := c.ShouldBindJSON(&ticket); err != nil {

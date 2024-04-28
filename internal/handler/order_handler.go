@@ -105,3 +105,14 @@ func (oh *OrderTicketHandler) GetAllOrder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "All Orders Log", "Orders": tickets})
 }
+
+func (oh *OrderTicketHandler) GetOrderByOrderNumber(c *gin.Context) {
+	orderNum := c.Param("orderNumb")
+	order, err := oh.orderTicket.GetOrderByOrderNumber(orderNum)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Details Orders", "Orders": order})
+}

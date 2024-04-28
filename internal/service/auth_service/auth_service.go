@@ -61,58 +61,15 @@ func (au *AuthService) LoginAuth(email, password string) (*model.User, error) {
 	return &user, nil
 }
 
-func (au *AuthService) GenerateToken(email, username string, roleId int) (string, error) {
-	return auth.GenerateJWT(email, username, roleId)
+func (au *AuthService) GenerateToken(email, username string, roleId int, userId int) (string, error) {
+	return auth.GenerateJWT(email, username, roleId, userId)
 }
 
-//	func (au *AuthService) Home() string {
-//		return "Welcome to the home page!"
-//	}
-
-func (au *AuthService) Home(tokenString string) (string, error) {
+func (au *AuthService) Home(tokenString string) (*auth.JWTClaim, error) {
 	// Validate the token
-	claims, err := auth.ValidateToken(tokenString)
+	user, err := auth.ValidateToken(tokenString)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-
-	// Here you can use claims.Username or claims.Email to retrieve user information from your database or wherever it's stored
-	// For demonstration purposes, let's just return the username
-	return claims.Username, nil
+	return user, nil
 }
-
-// func (au *AuthService) Home(userID uuid.UUID) (string, error) {
-// 	// Retrieve user data based on userID
-// 	var user model.User
-// 	if err := config.DB.Where("user_id = ?", userID).First(&user).Error; err != nil {
-// 		return "", err
-// 	}
-
-// 	// Construct welcome message with user data
-// 	message := "Welcome " + user.Username + " to the home page!"
-// 	return message, nil
-// }
-
-// func (au *AuthService) LoginAuth() ([]model.User, error) {
-// 	var user []model.User
-// 	if err := config.DB.Find(&user).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return user, nil
-// }
-
-// func (au *AuthService) LogoutAuth() ([]model.User, error) {
-// 	var customer []model.User
-// 	if err := config.DB.Find(&customer).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return customer, nil
-// }
-
-// func (au *AuthService) HomeAuth() ([]model.User, error) {
-// 	var customer []model.User
-// 	if err := config.DB.Find(&customer).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return customer, nil
-// }

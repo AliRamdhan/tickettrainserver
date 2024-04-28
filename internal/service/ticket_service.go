@@ -34,6 +34,14 @@ func (ps *TicketService) GetTicketById(ticketId uint) (*model.Ticket, error) {
 	return &tickets, nil
 }
 
+func (ps *TicketService) GetTicketByName(ticketTrain string) (*model.Ticket, error) {
+	var tickets model.Ticket
+	if err := config.DB.First(&tickets, "ticket_train = ?", ticketTrain).Error; err != nil {
+		return nil, err // Ticket not found
+	}
+	return &tickets, nil
+}
+
 func (ps *TicketService) UpdateTicket(ticketID uint, updatedTicket *model.Ticket) error {
 	// Find the Ticket with the given ID
 	var existingTicket model.Ticket
