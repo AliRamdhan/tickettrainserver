@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"strconv"
 	"time"
 
@@ -48,6 +49,33 @@ func (ps *PaymentService) CreatePayment(payment *model.Payment, orderId uint) er
 	}
 
 	if err := config.DB.Model(&order).Where("order_id = ?", orderId).Update("order_ticket_status", "active payment").Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ps *PaymentService) ProcessUserPayment(paymentCode uuid.UUID, paymentTotal uint) error {
+	// Fetch the payment record using payment code
+	var payment model.Payment
+	if err := config.DB.Where("payment_code = ?", paymentCode).First(&payment).Error; err != nil {
+		return err
+	}
+
+	// Check if payment total matches
+	if payment.PaymentTotal != paymentTotal {
+		return errors.New("payment failed")
+	}
+
+	// Update payment status
+	payment.PaymentStatus = "Complete"
+	if err := config.DB.Save(&payment).Error; err != nil {
+		return err
+	}
+
+	// Update order status
+	var order model.Order
+	if err := config.DB.Model(&order).Where("order_id = ?", payment.PaymentOrderId).Update("order_ticket_status", "Paid").Error; err != nil {
 		return err
 	}
 

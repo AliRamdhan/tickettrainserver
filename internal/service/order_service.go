@@ -67,7 +67,7 @@ func (os *OrderTicketService) GetAllOrder() ([]model.Order, error) {
 
 func (Os *OrderTicketService) GetOrderByOrderNumber(ordernumber string) (*model.Order, error) {
 	var orders model.Order
-	if err := config.DB.First(&orders, "order_number = ?", ordernumber).Error; err != nil {
+	if err := config.DB.Preload("Ticket").Preload("User").Preload("Seat").First(&orders, "order_number = ?", ordernumber).Error; err != nil {
 		return nil, err // Ticket not found
 	}
 	return &orders, nil

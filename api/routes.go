@@ -91,6 +91,7 @@ func ServicePayment(r *gin.Engine, paymentService *service.PaymentService) {
 	paymentRoutes := r.Group("/payment")
 	{
 		paymentRoutes.POST("/create", paymentHandler.CreatePayment)
+		paymentRoutes.POST("/process", paymentHandler.ProcessUserPayment)
 		paymentRoutes.GET("/all", paymentHandler.GetAllPayments)
 		// paymentRoutes.GET("/user/:userId", paymentHandler.GetAllOrderByUser)
 	}

@@ -6,6 +6,7 @@ import (
 	"github.com/AliRamdhan/trainticket/internal/model"
 	"github.com/AliRamdhan/trainticket/internal/service"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type PaymentHandler struct {
@@ -44,4 +45,22 @@ func (ph *PaymentHandler) CreatePayment(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Payment created successfully", "payment": payment})
+}
+
+func (ph *PaymentHandler) ProcessUserPayment(c *gin.Context) {
+	var request struct {
+		PaymentCode  uuid.UUID `json:"paymentCode"`
+		PaymentTotal uint      `json:"paymentTotal"`
+	}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := ph.paymentService.ProcessUserPayment(request.PaymentCode, request.PaymentTotal); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Payment processed successfully"})
 }
